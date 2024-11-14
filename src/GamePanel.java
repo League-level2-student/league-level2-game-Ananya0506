@@ -21,12 +21,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	Timer timer;
 	Font titleFont;
 	Font subtitleFont;
-	final int MENU = 0;
-	final int GAME = 1;
-	final int END = 2;
-	int currentState = MENU;
+	final static int MENU = 0;
+	final static int GAME = 1;
+	final static int END = 2;
+	static int currentState = MENU;
 	
-	Character c = new Character(200, 200, 20, 10);
+	Character c = new Character(200, 750, 20, 10);
 	ObjectManager manager = new ObjectManager(c);
 	
 	GamePanel(){
@@ -47,8 +47,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		  
 	  }
  void updateGameState() {
+
 	 manager.update();
 	 manager.checkCollision();	  
+	 if(c.isActive == false) {
+			currentState  = END;
+		}
 	  }
  void updateEndState() {
 	  
@@ -65,10 +69,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		g.drawString("Press SPACE for instructions", 100, 500);
 	}
 	void drawGameState(Graphics g) { 
+		g.setColor(Color.LIGHT_GRAY);
+		g.fillRect(0, 0, WIDTH, HEIGHT);
+		
 		manager.draw(g);
-		if(c.isActive == false) {
-			currentState  = END;
-		}
+		
 	
 	}
 	void drawEndState(Graphics g)  { 
@@ -115,13 +120,15 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		      
 		    	currentState++;
 		    	if(currentState == GAME) {
-		    		
+		    		c.isActive = true;
 		    	} else if (currentState == END) {
 		    		
 		    	}
 		    } 
 		}   
-		
+		if (e.getKeyCode()==KeyEvent.VK_SPACE || e.getKeyCode()==KeyEvent.VK_UP) {
+			c.jump();
+		}
 	}
 
 	@Override
