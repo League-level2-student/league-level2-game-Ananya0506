@@ -6,12 +6,13 @@ import java.util.Random;
 public class ObjectManager {
 	Character c;
 	ArrayList<Obstacle> obstacles = new ArrayList<>();
+	int score = 0; 
 	
-
+	
 	ObjectManager(Character c) {
 		this.c = c;
 		obstacles = addObstacles();
-		
+	
 	}
 
 	private ArrayList<Obstacle> addObstacles() {
@@ -24,7 +25,7 @@ public class ObjectManager {
 			
 			int r = ran.nextInt(5);
 			int l = ran.nextInt(500) + 200;
-		a.add(new Obstacle(lastX + l, 750 - r*10, 20, 10 + r*10, 10));
+		a.add(new Obstacle(lastX + l, 600 - r*10, 20, 10 + r*10, 10, false));
 		lastX = lastX+l;
 		}
 		
@@ -66,11 +67,21 @@ public class ObjectManager {
 				GamePanel.currentState = GamePanel.END; 
 			
 				c.isActive = false;
+			
 			}
+		
+		if (o.x <= c.x && o.squareCounted == false) {
+			score = score+1;
+			o.squareCounted = true;
 		}
 		if (!c.isActive) {
 			obstacles = addObstacles();
 		}
 		}
-	
+		
+	}
+	public int getScore() {
+		return score;
+		
+	}
 }

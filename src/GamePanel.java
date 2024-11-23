@@ -25,10 +25,24 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	final static int GAME = 1;
 	final static int END = 2;
 	static int currentState = MENU;
-	
-	Character c = new Character(200, 750, 20, 10);
+	int score = 0;
+	public static BufferedImage image;
+	public static boolean needImage = true;
+	public static boolean gotImage = false;	
+	Character c = new Character(200, 600, 20, 10);
 	ObjectManager manager = new ObjectManager(c);
 	
+	void loadImage(String imageFile) {
+	    if (needImage) {
+	        try {
+	            image = ImageIO.read(this.getClass().getResourceAsStream(imageFile));
+		    gotImage = true;
+	        } catch (Exception e) {
+	            
+	        }
+	        needImage = false;
+	    }
+	}
 	GamePanel(){
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,10 +55,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		  subtitleFont = new Font("Comfortaa", Font.PLAIN, 20);
 		 timer = new Timer(1000/60,this);
 		   timer.start();
+		   if (needImage) {
+			    loadImage ("landscape.jpg");
+			}
 	}
 	 
 	  void updateMenuState() {
-		  
+		 manager.score=0;
 	  }
  void updateGameState() {
 
@@ -53,6 +70,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	 if(c.isActive == false) {
 			currentState  = END;
 		}
+	 setFont(subtitleFont);
+	 
 	  }
  void updateEndState() {
 	  
@@ -60,21 +79,31 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	    
 	void drawMenuState(Graphics g) { 
 		g.setColor(new Color(205, 177, 224));
-		g.fillRect(0, 0, WIDTH , HEIGHT );
+		g.fillRect(0, 0, WIDTH , HEIGHT);
 		g.setFont(titleFont);
 		g.setColor(new Color(255, 247, 3));
 		g.drawString("UNTITLED GAME", 100, 100);
 		g.setFont(subtitleFont);
 		g.drawString("Press ENTER to start", 100, 300);
-		g.drawString("Press SPACE for instructions", 100, 500);
+		g.drawString("Rules:", 100, 400);
+		g.drawString("-The objective of the game is to jump over the obstacles and get the highest score possible.", 100, 450);
+		g.drawString("-To jump, you can either press the space or the up key.", 100, 500);
+		g.drawString("-You CANNOT double jump, you can only jump once, no matter how many times you press the space/jump key.", 100, 550);
+		g.drawString("GOOD LUCK!", 100, 600);
+	
 	}
 	void drawGameState(Graphics g) { 
-		g.setColor(Color.LIGHT_GRAY);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
+		
+		if (gotImage) {
+        	g.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
+        } else {
+        	g.setColor(Color.LIGHT_GRAY);
+        	g.fillRect(0, 0, WIDTH, HEIGHT);
+        }
 		
 		manager.draw(g);
+		g.drawString(String.valueOf(manager.getScore()), 10,10);
 		
-	
 	}
 	void drawEndState(Graphics g)  { 
 		g.setColor(new Color(222, 197, 175));
@@ -84,6 +113,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		g.drawString("GAME OVER", 100, 100);
 		g.setFont(subtitleFont);
 		g.drawString("Press ENTER to restart", 100, 500);
+		g.drawString("Final Score: " + manager.getScore(), 100, 600);
+		manager.getScore();
 	}
 	@Override
 	public void paintComponent(Graphics g){
@@ -98,6 +129,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		
 		if(currentState == MENU){
 		    updateMenuState();
 		}else if(currentState == GAME){

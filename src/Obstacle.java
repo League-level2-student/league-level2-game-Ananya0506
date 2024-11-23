@@ -4,9 +4,12 @@ import java.awt.Graphics;
 public class Obstacle extends GameObject {
 
 	
-	Obstacle(int x, int y, int width, int height, int speed) {
-		super(x, y, width, height, speed);
 
+	public boolean squareCounted;
+
+	Obstacle(int x, int y, int width, int height, int speed, boolean squareCounted) {
+		super(x, y, width, height, speed);
+	this.squareCounted = squareCounted;
 	}
 
 	public void update() {
